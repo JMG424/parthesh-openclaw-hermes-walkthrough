@@ -42,14 +42,44 @@
     footer{padding:40px 0 60px;color:var(--muted);font-size:14px}.footerline{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     @media(max-width:900px){body{font-size:16px}.hero,.grid-3,.grid-2,.cols,.callout{grid-template-columns:1fr}.hero-card{padding:30px}.nav{align-items:flex-start;flex-direction:column}.step{grid-template-columns:1fr}.num{width:54px;height:54px}.section-title{display:block}.section-title h2{margin-bottom:8px}}
     @media print{body{background:white}.navlinks,.hero-actions{display:none}.hero,.grid-3,.grid-2,.cols,.step,.callout{display:block}.card,.mini,.step,.hero-card,.callout{break-inside:avoid;box-shadow:none}.wrap{width:auto;margin:0 18px}}
+
+    /* Live install runbook additions */
+    .live-banner{display:none;background:linear-gradient(135deg,#0f766e,#2563eb);color:#fff;border-radius:18px;padding:12px 18px;margin:0 0 22px;font-weight:800;align-items:center;gap:14px;box-shadow:0 10px 26px rgba(15,118,110,.25)}
+    body.live .live-banner{display:flex}
+    .live-dot{width:10px;height:10px;border-radius:50%;background:#3ee774;box-shadow:0 0 12px #3ee774;animation:pulse 1.6s infinite}
+    .live-banner .meta{font-weight:500;font-size:14px;color:#e6fffb;margin-left:auto}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.2)}}
+    .step-extra{display:grid;gap:12px;margin-top:14px}
+    .forge-bg{background:linear-gradient(135deg,#0c1222,#1c3158);color:#dce8ff;border:1px solid #263450;border-radius:18px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start}
+    .forge-bg .badge{flex:none;background:#3ee774;color:#0c1222;font-weight:900;font-size:11px;letter-spacing:.08em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
+    .forge-bg .body{display:grid;gap:4px}
+    .forge-bg .label{font-weight:900;color:#bbd7ff;text-transform:uppercase;letter-spacing:.1em;font-size:11px}
+    .forge-bg p{margin:0;color:#dce8ff;font-size:14.5px}
+    .codebox{background:#0c1222;color:#e8eefc;border-radius:18px;padding:16px;border:1px solid #263450}
+    .codebox.cmd{background:#0b1a14;border-color:#1f4031}
+    .codebox.receipt{background:#0e1a26;border-color:#1d3550}
+    .codebox .copylabel{color:#9fb7ff;font-weight:900;text-transform:uppercase;letter-spacing:.1em;font-size:11px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .codebox.cmd .copylabel{color:#7fe2b1}
+    .codebox.receipt .copylabel{color:#a2c7ff}
+    .codebox pre{white-space:pre-wrap;font:13.5px/1.55 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;margin:0}
+    .copybtn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:inherit;border-radius:999px;padding:4px 11px;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.06em;font-family:inherit}
+    .copybtn:hover{background:rgba(255,255,255,.2)}
+    .copybtn.copied{background:#3ee774;color:#0c1222;border-color:#3ee774}
+    .step .num.zero{background:linear-gradient(135deg,#0f766e,#2563eb)}
   </style>
 </head>
 <body>
   <header class="wrap">
+    <div class="live-banner" id="liveBanner" role="status" aria-live="polite">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span>In session with Jason — Forge is online over Tailscale SSH.</span>
+      <span class="meta">Append <code style="background:rgba(0,0,0,.2);padding:2px 6px;border-radius:6px">?live=1</code> to toggle.</span>
+    </div>
     <nav class="nav" aria-label="Page navigation">
       <div class="brand"><div class="mark">57</div><span>Agent57 Setup Guide</span></div>
       <div class="navlinks">
         <a href="#walkthrough">Walkthrough</a>
+        <a href="#step0">Forge Readiness</a>
         <a href="#integrations">Integrations</a>
         <a href="#boundaries">Boundaries</a>
         <a href="#prompt">Setup Prompt</a>
@@ -110,17 +140,178 @@
     <section class="wrap" id="walkthrough">
       <div class="section-title"><h2>Guided setup walkthrough</h2><p>Each step is written so Parthesh can follow what is happening while Jason handles the technical parts.</p></div>
       <div class="walkthrough">
-        <article class="step"><div class="num">1</div><div><h3>Prepare the Mac</h3><p class="plain">We confirm the machine is ready and create a clean place for the AI setup.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Keep the Mac powered on</li><li>Confirm admin access</li><li>Stay available for approvals</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Check macOS readiness</li><li>Create setup folder</li><li>Document machine name</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Mac ready</li><li>Project folder created</li><li>Owner noted</li></ul></div></div></div></article>
-        <article class="step"><div class="num">2</div><div><h3>Set up Tailscale</h3><p class="plain">We create a secure private connection for support and maintenance.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Login to Tailscale</li><li>Approve device access</li><li>Confirm who should have access</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Name the device clearly</li><li>Verify private access</li><li>Record access boundaries</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Mac visible in Tailscale</li><li>Access list documented</li></ul></div></div></div></article>
-        <article class="step"><div class="num">3</div><div><h3>Install OpenClaw foundation</h3><p class="plain">We set up the small agent team: main agent, system designer, and maintenance bot.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Choose simple agent names</li><li>Confirm the first team needs</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create isolated OpenClaw workspace</li><li>Configure initial agent roster</li><li>Keep permissions narrow</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Roster visible</li><li>Agents respond to test prompts</li></ul></div></div></div></article>
-        <article class="step"><div class="num">4</div><div><h3>Connect Hermes bot + LLM access</h3><p class="plain">We connect the agent brain using Codex and ChatGPT OAuth / GPT-5.5 access.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Approve OAuth login when needed</li><li>Do not paste passwords or secrets into chat</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create Hermes profile</li><li>Configure model connection</li><li>Verify tool access</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Model responds</li><li>Hermes profile loads</li><li>Tools are listed</li></ul></div></div></div></article>
-        <article class="step"><div class="num">5</div><div><h3>Connect Telegram</h3><p class="plain">We create the simple communication channel for Parthesh and the team.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Confirm who will use Telegram</li><li>Send a test message</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Configure routing</li><li>Test agent response</li><li>Document usage rules</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Message sent</li><li>Agent replied</li></ul></div></div></div></article>
-        <article class="step"><div class="num">6</div><div><h3>Connect Composio integration layer</h3><p class="plain">We add the secure app connector layer after the agent can talk, but before giving it business app access.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Create or approve Composio access</li><li>Approve only needed app scopes</li><li>Do not paste OAuth codes or secrets into chat</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Add Composio MCP / connector config</li><li>Keep app permissions narrow</li><li>Document approved integrations</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Composio connected</li><li>Allowed apps listed</li><li>No broad access granted</li></ul></div></div></div></article>
-        <article class="step"><div class="num">7</div><div><h3>Authorize first app integrations</h3><p class="plain">We connect only the apps needed for the first useful workflows: usually Calendar, Gmail, and Drive.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Authorize Google Calendar</li><li>Authorize Gmail / email if needed</li><li>Authorize Drive only if document search is needed</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Run app-by-app smoke tests</li><li>Set approval rules for sending/changing</li><li>Record what each integration may do</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Calendar lookup tested</li><li>Email search/draft tested</li><li>Drive search tested if enabled</li></ul></div></div></div></article>
-        <article class="step"><div class="num">8</div><div><h3>Set up AgentMail</h3><p class="plain">We give the agent an inbox lane for requests, intake, and automation that is separate from personal email access.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Confirm inbox purpose</li><li>Approve first automation</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create/connect AgentMail</li><li>Test the inbox</li><li>Build one simple flow</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>AgentMail works</li><li>First flow tested</li></ul></div></div></div></article>
-        <article class="step"><div class="num">9</div><div><h3>Create memory layer</h3><p class="plain">We decide what the agents should remember and what must stay out of memory.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Share preferences</li><li>Share key workflows</li><li>Identify off-limits data</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create short-term notes</li><li>Create long-term memory folder</li><li>Set memory rules</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Memory write/read tested</li><li>Secret rules documented</li></ul></div></div></div></article>
-        <article class="step"><div class="num">10</div><div><h3>Run first useful workflows</h3><p class="plain">We prove the setup works with real examples before expanding.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Give 2–3 real requests</li><li>Say what felt useful or confusing</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Test Telegram request</li><li>Test Calendar/email/Drive smoke tests</li><li>Test AgentMail flow</li><li>Test memory capture</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Three workflows tested</li><li>Next tuning list created</li></ul></div></div></div></article>
-        <article class="step"><div class="num">11</div><div><h3>Handoff + 30-day tuning</h3><p class="plain">We finish with a simple operating agreement for how Parthesh uses it and how Jason supports it.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Use the agent in daily work</li><li>Flag friction points</li><li>Approve new access before use</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Tune prompts and workflows</li><li>Support maintenance</li><li>Keep setup notes current</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Handoff reviewed</li><li>Support path clear</li></ul></div></div></div></article>
+        <article class="step" id="step0"><div class="num zero">0</div><div><h3>Forge readiness (Jason does this before the call)</h3><p class="plain">Before Zoom starts, Jason brings his Hermes agent <strong>Forge</strong> online on his Mac Studio so it can support every step that follows over Tailscale SSH. Parthesh just reads this — there is nothing for him to do here.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Nothing yet — keep the Mac on</li><li>Have your Apple ID password handy for Tailscale install</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Confirm Forge profile is loaded</li><li>Stage SSH key + MCP wrapper to push to Parthesh’s Mac after Tailscale joins</li><li>Confirm tailnet ACL has a slot ready for the new node</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Forge responds in Telegram</li><li>Tailscale ACL is ready for parthesh-mac</li><li>MCP wrapper staged on Mac Studio</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background</div><p>Forge confirms its Telegram bot reaches Jason, runs <code>tailscale status</code> to confirm the tailnet is healthy, and reads <code>~/.hermes/profiles/forge/.env</code> so it can mirror the MCP wrapper to Parthesh’s Mac once the SSH handshake completes in Step 2.</p></div></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Jason’s pre-call checklist (Mac Studio)</span></div><pre>tailscale status | head
+ls /Users/clawd57/.codex/mcp-wrappers/run-forge-research-mcp
+ls /Users/clawd57/.hermes/profiles/forge/.env
+openclaw agent --agent main --message "forge readiness check" --timeout 30</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Verify</span></div><pre>tailscale status            # Mac Studio + Jason’s laptop visible, tailnet up
+echo $?                     # 0
+# Telegram: Forge replied to readiness check</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">1</div><div><h3>Prepare the Mac</h3><p class="plain">We confirm the machine is ready and create a clean place for the AI setup.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Keep the Mac powered on</li><li>Confirm admin access</li><li>Stay available for approvals</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Check macOS readiness</li><li>Create setup folder</li><li>Document machine name</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Mac ready</li><li>Project folder created</li><li>Owner noted</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background</div><p>Forge is staged but cannot SSH in until Step 2 lands. While Parthesh runs the prereqs, Forge pre-builds the install plan and waits for the tailnet handshake. The moment it gets in, it captures <code>sw_vers</code>, <code>uname -m</code>, and free disk into its memory of <code>parthesh-mac</code>.</p></div></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — Parthesh’s Terminal</span></div><pre>xcode-select --install
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install git node python@3.12 gh tailscale jq</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre>brew --version       # &gt;= 4.x
+node --version       # &gt;= 20
+python3 --version    # &gt;= 3.12
+gh --version</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">2</div><div><h3>Set up Tailscale</h3><p class="plain">We create a secure private connection for support and maintenance.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Login to Tailscale</li><li>Approve device access</li><li>Confirm who should have access</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Name the device clearly</li><li>Verify private access</li><li>Record access boundaries</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Mac visible in Tailscale</li><li>Access list documented</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background — handshake</div><p>The instant <code>parthesh-mac</code> appears in the tailnet, Forge tags it <code>tag:parthesh</code>, opens its first SSH session, and runs a non-destructive sanity sweep. From this point on, every Forge-background block in this guide is real — Forge is on the Mac.</p></div></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — Parthesh’s Terminal</span></div><pre>sudo tailscaled install-system-daemon
+tailscale up --ssh --hostname=parthesh-mac
+# Approve in the browser when prompted
+tailscale status</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre>tailscale status                          # Jason’s Mac Studio shown as online
+# Jason side: ssh parthesh-mac 'uname -a' succeeds and returns Darwin</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">3</div><div><h3>Install OpenClaw foundation</h3><p class="plain">We set up the small agent team: main agent, system designer, and maintenance bot.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Choose simple agent names</li><li>Confirm the first team needs</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create isolated OpenClaw workspace</li><li>Configure initial agent roster</li><li>Keep permissions narrow</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Roster visible</li><li>Agents respond to test prompts</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background</div><p>Forge tails <code>~/.openclaw/logs/gateway.log</code> over SSH and pings Telegram if the gateway fails to start within 30s of <code>openclaw init</code>. It mirrors Jason’s proven workspace layout — <code>SOUL.md</code>, <code>IDENTITY.md</code>, <code>AGENTS.md</code>, <code>HEARTBEAT.md</code>, <code>CONTEXT.md</code>, <code>MEMORY.md</code>, <code>TOOLS.md</code>, <code>USER.md</code> — so day one matches the tested conventions on the Mac Studio.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex on Parthesh’s Mac</span></div><pre>You are the installer. Walk me through provisioning OpenClaw on this Mac.
+Use the convention from Jason’s existing stack: a single gateway on
+localhost:18789, one workspace per agent under ~/.openclaw/workspace*,
+and a LaunchAgent at ~/Library/LaunchAgents/ai.openclaw.gateway.plist.
+Confirm each step with me before changing files. Do not paste any
+secrets into this chat — read them from the wrapper at the path Jason
+will share next.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — verify after Jason installs over SSH</span></div><pre>ls ~/.openclaw                            # workspace, agents, cron, logs
+jq '.agents[].id' ~/.openclaw/openclaw.json
+launchctl list | grep ai.openclaw         # gateway LaunchAgent loaded</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre>curl -s http://127.0.0.1:18789/health     # {"ok":true,...}
+openclaw agent --agent main --message "ping" --timeout 30</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">4</div><div><h3>Connect Hermes bot + LLM access</h3><p class="plain">We connect the agent brain using Codex and ChatGPT OAuth / GPT-5.5 access.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Approve OAuth login when needed</li><li>Do not paste passwords or secrets into chat</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create Hermes profile</li><li>Configure model connection</li><li>Verify tool access</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Model responds</li><li>Hermes profile loads</li><li>Tools are listed</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background — secret hygiene</div><p>Forge SSHes in and stages the MCP wrapper at <code>~/.codex/mcp-wrappers/run-forge-research-mcp</code> on Parthesh’s Mac, then <code>scp</code>s the encrypted env file to <code>~/.hermes/profiles/forge/.env</code>. Secrets never appear in Zoom chat, in this page, or in shell history. The wrapper reads them at runtime and passes them to each MCP server as environment variables.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex</span></div><pre>You are Codex on a fresh Mac. Register the five research MCPs against the
+Forge wrapper Jason staged at ~/.codex/mcp-wrappers/run-forge-research-mcp.
+Never read or print the env file contents. After adding them, run
+`codex mcp list` and confirm all five servers are Connected.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — Parthesh’s Terminal</span></div><pre>npm i -g @openai/codex
+codex login                              # ChatGPT OAuth in browser
+WRAPPER="$HOME/.codex/mcp-wrappers/run-forge-research-mcp"
+for n in exa firecrawl perplexity context7 x-live; do
+  codex mcp remove "$n" --scope user &gt;/dev/null 2&gt;&amp;1 || true
+done
+codex mcp add --scope user exa        -- "$WRAPPER" exa
+codex mcp add --scope user firecrawl  -- "$WRAPPER" firecrawl
+codex mcp add --scope user perplexity -- "$WRAPPER" perplexity
+codex mcp add --scope user context7   -- "$WRAPPER" context7
+codex mcp add --scope user --transport http x-live http://127.0.0.1:8000/mcp</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre>codex mcp list
+# exa, firecrawl, perplexity, context7, x-live — all "Connected"</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">5</div><div><h3>Connect Telegram</h3><p class="plain">We create the simple communication channel for Parthesh and the team.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Confirm who will use Telegram</li><li>Send a test message</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Configure routing</li><li>Test agent response</li><li>Document usage rules</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Message sent</li><li>Agent replied</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background</div><p>Forge briefly subscribes to Parthesh’s new bot to confirm the first inbound message reaches the gateway, then unsubscribes so Parthesh’s bot stays single-tenant. The bot token is injected by Forge over SSH and only ever lives in <code>~/.openclaw/openclaw.json</code> on Parthesh’s Mac.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — first message to the main agent in Telegram</span></div><pre>This is the first message to your new persistent agent. Reply with the
+five MCPs you can reach (exa, firecrawl, perplexity, context7, x-live)
+and confirm your gateway URL. Keep the answer to four lines.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — verify routing from Terminal</span></div><pre>openclaw agent --agent main --message "echo: routing test" --timeout 60</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre># In Telegram: agent replies within ~5s
+tail -n 30 ~/.openclaw/logs/gateway.log    # outbound delivery succeeded</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">6</div><div><h3>Connect Composio integration layer</h3><p class="plain">We add the secure app connector layer after the agent can talk, but before giving it business app access.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Create or approve Composio access</li><li>Approve only needed app scopes</li><li>Do not paste OAuth codes or secrets into chat</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Add Composio MCP / connector config</li><li>Keep app permissions narrow</li><li>Document approved integrations</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Composio connected</li><li>Allowed apps listed</li><li>No broad access granted</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background — scope review</div><p>Before Parthesh links any account, Forge runs <code>composio search</code> against the staged profile to enumerate the OAuth scopes each integration would request. Anything broader than read-list for Calendar/Gmail/Drive gets flagged for explicit approval.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex</span></div><pre>You are about to add the Composio integration layer. Before linking any
+app, list the OAuth scopes you would request for Gmail, Calendar, and
+Drive. Wait for Parthesh’s approval per app before proceeding. Never
+request write or send scopes without explicit confirmation.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — Parthesh’s Terminal</span></div><pre>brew install composio        # or follow Composio install docs if not in brew
+composio --version
+composio link                # interactive — narrow scopes only</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre>composio integrations        # only approved apps listed; no surprises</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">7</div><div><h3>Authorize first app integrations</h3><p class="plain">We connect only the apps needed for the first useful workflows: usually Calendar, Gmail, and Drive.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Authorize Google Calendar</li><li>Authorize Gmail / email if needed</li><li>Authorize Drive only if document search is needed</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Run app-by-app smoke tests</li><li>Set approval rules for sending/changing</li><li>Record what each integration may do</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Calendar lookup tested</li><li>Email search/draft tested</li><li>Drive search tested if enabled</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background</div><p>Forge runs the smoke tests in a sandbox account first to confirm the scopes work, then asks Parthesh to authorize each app one at a time. Any failure halts the flow — Parthesh never authorizes more than one app per confirmation cycle.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex once each integration is linked</span></div><pre>Run one smoke test per integration in this order:
+1) Calendar — list today’s events (read only)
+2) Gmail — search for "test" (read only, do not draft or send)
+3) Drive — search for "test" (read only)
+Report a single PASS/FAIL line per app, then stop and wait for me.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — Parthesh’s Terminal, one app at a time</span></div><pre>composio link googlecalendar
+composio link gmail
+composio link googledrive    # only if document search is actually needed</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre>composio integrations | grep -E 'gmail|calendar|drive'   # all "active"</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">8</div><div><h3>Set up AgentMail</h3><p class="plain">We give the agent an inbox lane for requests, intake, and automation that is separate from personal email access.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Confirm inbox purpose</li><li>Approve first automation</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create/connect AgentMail</li><li>Test the inbox</li><li>Build one simple flow</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>AgentMail works</li><li>First flow tested</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background</div><p>Forge tails the gateway webhook endpoint and confirms the first inbound message lands within 30s of the test send. If the webhook is silent, Forge flips on extra logging and pings Jason’s Telegram before the silence reaches Parthesh.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex / main agent</span></div><pre>Create a new AgentMail inbox called "parthesh-ops". First flow:
+forward any message tagged "tune" into the main agent’s MEMORY.md
+as a tuning note. Confirm with me before activating.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — Parthesh’s Terminal</span></div><pre>agentmail inbox create parthesh-ops --org parthesh
+agentmail flow add --inbox parthesh-ops --on tag=tune --to main:memory</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre># Send test email tagged "tune" → appears in MEMORY.md within 60s
+tail -f ~/.openclaw/workspace/MEMORY.md</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">9</div><div><h3>Create memory layer</h3><p class="plain">We decide what the agents should remember and what must stay out of memory.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Share preferences</li><li>Share key workflows</li><li>Identify off-limits data</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create short-term notes</li><li>Create long-term memory folder</li><li>Set memory rules</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Memory write/read tested</li><li>Secret rules documented</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background — proven memory shape</div><p>Forge seeds Parthesh’s workspace with the same memory layout proven on Jason’s stack: per-agent <code>SOUL/IDENTITY/AGENTS/HEARTBEAT/CONTEXT/MEMORY/TOOLS/USER</code>, plus a <code>recall.py</code> search helper. The 6-hour <code>auto-extract</code> / <code>auto-recall</code> cycle is scheduled but stays disabled until Parthesh approves the first knowledge-graph write.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex / main agent</span></div><pre>Initialize MEMORY.md for the main agent with this seed:
+
+  Name: Parthesh
+  Business: &lt;to-fill&gt;
+  Telegram chat ID: &lt;to-fill&gt;
+  Boundaries: see /boundaries on the setup page
+  Secret rule: never store passwords, API keys, OAuth codes.
+
+After writing the seed, suggest the first three pieces of long-term
+context worth capturing from today’s session.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — Parthesh’s Terminal</span></div><pre>mkdir -p ~/.openclaw/workspace/memory
+ls ~/.openclaw/workspace/         # SOUL, IDENTITY, AGENTS, MEMORY, ...
+python3 ~/.openclaw/workspace/recall.py "test query"</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre>ls ~/.openclaw/workspace/memory/$(date +%F).md   # today’s note exists</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">10</div><div><h3>Run first useful workflows</h3><p class="plain">We prove the setup works with real examples before expanding.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Give 2–3 real requests</li><li>Say what felt useful or confusing</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Test Telegram request</li><li>Test Calendar/email/Drive smoke tests</li><li>Test AgentMail flow</li><li>Test memory capture</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Three workflows tested</li><li>Next tuning list created</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background — transcript capture</div><p>Forge captures the full session transcript from gateway logs and produces a post-call summary that lands in Parthesh’s <code>MEMORY.md</code> within 10 minutes of the Zoom ending. The summary highlights any tool call that ran &gt;15s so Jason can tune in the next sync.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex / main agent (live demo)</span></div><pre>Run three end-to-end workflows now, with Parthesh watching:
+1) Research: use exa + context7 to summarize one competitor in 5 bullets.
+2) Communication: draft (do NOT send) a follow-up email via Composio Gmail.
+3) Memory: capture today’s three top pain points into MEMORY.md.
+
+After each, ask Parthesh: useful, confusing, or off-target?
+Stop after all three and produce a tuning list.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — watch tool calls land</span></div><pre>tail -f ~/.openclaw/logs/gateway.log</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre># 3 workflows ran, each labeled PASS / CONFUSING / OFF by Parthesh
+# Tuning list appended to ~/.openclaw/workspace/MEMORY.md</pre></div>
+        </div>
+        </div></article>
+        <article class="step"><div class="num">11</div><div><h3>Handoff + 30-day tuning</h3><p class="plain">We finish with a simple operating agreement for how Parthesh uses it and how Jason supports it.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Use the agent in daily work</li><li>Flag friction points</li><li>Approve new access before use</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Tune prompts and workflows</li><li>Support maintenance</li><li>Keep setup notes current</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Handoff reviewed</li><li>Support path clear</li></ul></div></div>
+        <div class="step-extra">
+          <div class="forge-bg"><div class="badge">Forge</div><div class="body"><div class="label">Background — 30-day tuning loop</div><p>Forge schedules a weekly check-in cron (Monday 9am Parthesh-local) that sends a short Telegram nudge: <em>“What felt off this week?”</em> Replies are captured into a tuning queue that Jason reviews before the next sync. Cron jobs that invoke skills get <code>payload.timeoutSeconds</code> bumped above the 90s default — the known gotcha from Jason’s stack.</p></div></div>
+          <div class="codebox"><div class="copylabel"><span>Prompt — paste into Codex / main agent at handoff</span></div><pre>Lock in the operating agreement. Read the Setup Prompt on this page and
+acknowledge each clause. List the three workflows we tested today.
+Confirm that any new integration requires Parthesh’s explicit approval
+and that secrets never go in memory.</pre></div>
+          <div class="codebox cmd"><div class="copylabel"><span>Commands — confirm the tuning loop is armed</span></div><pre>crontab -l                              # gateway, oauth-refresh, weekly nudge
+jq '.[] | select(.enabled) | {id,schedule}' ~/.openclaw/cron/jobs.json</pre></div>
+          <div class="codebox receipt"><div class="copylabel"><span>Receipt — verify</span></div><pre># Weekly nudge job is enabled:true in jobs.json
+# Parthesh has this page bookmarked, knows Tailscale node name,
+# and can DM Jason via Telegram for any friction during the 30 days</pre></div>
+        </div>
+        </div></article>
       </div>
     </section>
 
@@ -171,5 +362,27 @@ Never store passwords, API keys, OAuth codes, or secrets in memory.</pre></div>
   <footer class="wrap">
     <div class="footerline"><span>Prepared by Agent57 / Jason Galoob</span><span>OpenClaw / Hermes persistent AI setup walkthrough</span></div>
   </footer>
+
+  <script>
+    // ?live=1 toggles the in-session banner. Jason flips this on before Zoom.
+    if (new URLSearchParams(location.search).get('live') === '1') {
+      document.body.classList.add('live');
+    }
+    // Copy buttons on every .codebox + .prompt block.
+    document.querySelectorAll('.codebox, .prompt').forEach(function(box){
+      var pre = box.querySelector('pre'); if (!pre) return;
+      var label = box.querySelector('.copylabel'); if (!label) return;
+      if (label.querySelector('.copybtn')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'copybtn'; btn.textContent = 'Copy';
+      btn.addEventListener('click', function(){
+        navigator.clipboard.writeText(pre.textContent).then(function(){
+          btn.textContent = 'Copied'; btn.classList.add('copied');
+          setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1400);
+        });
+      });
+      label.appendChild(btn);
+    });
+  </script>
 </body>
 </html>
