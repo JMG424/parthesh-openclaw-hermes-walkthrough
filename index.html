@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parthesh — OpenClaw / Hermes Setup Walkthrough</title>
+  <meta name="description" content="A non-technical guided walkthrough for setting up Parthesh's OpenClaw / Hermes persistent AI support layer with Jason's help." />
+  <style>
+    :root{
+      --navy:#111b33; --navy2:#1c3158; --ink:#172033; --muted:#5f6f86; --line:#d9e4f2;
+      --soft:#f6f8fc; --soft2:#eef5ff; --blue:#2563eb; --green:#0f766e; --gold:#b7791f;
+      --white:#fff; --shadow:0 18px 55px rgba(17,27,51,.12); --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:linear-gradient(180deg,#eef4fb 0%,#fff 32%,#f7f9fc 100%);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55;font-size:17px}
+    a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:0 auto}
+    header{padding:34px 0 18px}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:30px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:850;color:var(--navy)}
+    .mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--navy),var(--blue));display:grid;place-items:center;color:white;font-weight:900}
+    .navlinks{display:flex;gap:12px;flex-wrap:wrap}.navlinks a{font-size:14px;color:#40506a;background:white;border:1px solid var(--line);padding:9px 12px;border-radius:999px}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:26px;align-items:stretch;padding:24px 0 38px}
+    .hero-card{background:linear-gradient(135deg,var(--navy),var(--navy2));color:white;border-radius:32px;padding:42px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+    .hero-card:after{content:"";position:absolute;right:-80px;top:-80px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.09)}
+    .eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:900;color:#bbd7ff;margin-bottom:14px}
+    h1{font-size:clamp(36px,6vw,64px);line-height:1;letter-spacing:-.055em;margin:0 0 18px;text-wrap:balance}
+    .lead{font-size:21px;color:#dce8ff;max-width:720px;margin:0}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;border-radius:999px;padding:0 18px;font-weight:800;border:1px solid transparent}.btn.primary{background:white;color:var(--navy)}.btn.secondary{background:rgba(255,255,255,.1);color:white;border-color:rgba(255,255,255,.22)}
+    .summary{display:grid;gap:14px}.mini{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 10px 32px rgba(17,27,51,.07)}
+    .mini strong{display:block;color:var(--navy);font-size:15px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}.mini p{margin:0;color:var(--muted)}
+    section{padding:30px 0}.section-title{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:18px}.section-title h2{font-size:34px;line-height:1.08;letter-spacing:-.035em;margin:0;color:var(--navy)}.section-title p{margin:0;color:var(--muted);max-width:620px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.card{background:white;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:0 8px 28px rgba(17,27,51,.055)}
+    .card h3{margin:0 0 8px;color:var(--navy);font-size:21px;letter-spacing:-.02em}.card p{margin:0;color:var(--muted)}
+    .pill{display:inline-flex;align-items:center;gap:7px;border-radius:999px;font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;margin-bottom:12px}.blue{background:#dbeafe;color:#1d4ed8}.green{background:#d9fbe8;color:#11683b}.gold{background:#fff2cc;color:#7a4b00}.red{background:#fee2e2;color:#991b1b}
+    .walkthrough{display:grid;gap:16px}.step{display:grid;grid-template-columns:88px 1fr;gap:18px;background:white;border:1px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 8px 28px rgba(17,27,51,.055)}
+    .num{width:64px;height:64px;border-radius:20px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:950;font-size:22px}.step h3{margin:0 0 8px;font-size:24px;color:var(--navy);letter-spacing:-.025em}.step .plain{margin:0 0 14px;color:var(--muted)}
+    .cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.box{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:14px}.box strong{display:block;margin-bottom:7px;color:var(--navy)}ul{margin:0;padding-left:20px;color:var(--muted)}li{margin:5px 0}.check li{list-style:"□  ";padding-left:2px}.done li{list-style:"✓  "}
+    .prompt{background:#0c1222;color:#e8eefc;border-radius:26px;padding:24px;overflow:auto;border:1px solid #263450}.prompt pre{white-space:pre-wrap;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;margin:0}.prompt .copylabel{color:#9fb7ff;font-weight:900;text-transform:uppercase;letter-spacing:.1em;font-size:12px;margin-bottom:10px}
+    .callout{background:linear-gradient(135deg,#eff6ff,#ecfdf5);border:1px solid #b9d7ff;border-radius:28px;padding:26px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}.callout h3{margin:0 0 6px;font-size:26px;color:var(--navy)}.callout p{margin:0;color:var(--muted)}
+    footer{padding:40px 0 60px;color:var(--muted);font-size:14px}.footerline{border-top:1px solid var(--line);padding-top:18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    @media(max-width:900px){body{font-size:16px}.hero,.grid-3,.grid-2,.cols,.callout{grid-template-columns:1fr}.hero-card{padding:30px}.nav{align-items:flex-start;flex-direction:column}.step{grid-template-columns:1fr}.num{width:54px;height:54px}.section-title{display:block}.section-title h2{margin-bottom:8px}}
+    @media print{body{background:white}.navlinks,.hero-actions{display:none}.hero,.grid-3,.grid-2,.cols,.step,.callout{display:block}.card,.mini,.step,.hero-card,.callout{break-inside:avoid;box-shadow:none}.wrap{width:auto;margin:0 18px}}
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <nav class="nav" aria-label="Page navigation">
+      <div class="brand"><div class="mark">57</div><span>Agent57 Setup Guide</span></div>
+      <div class="navlinks">
+        <a href="#walkthrough">Walkthrough</a>
+        <a href="#boundaries">Boundaries</a>
+        <a href="#prompt">Setup Prompt</a>
+        <a href="https://docs.google.com/spreadsheets/d/11mX3aS6KZ9AXEvJmdyTP7mHAeBzvULszlT_rLMwuROA/edit?usp=drivesdk">Persistent Doc</a>
+      </div>
+    </nav>
+    <div class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Client walkthrough</div>
+        <h1>Parthesh OpenClaw / Hermes Persistent AI Setup</h1>
+        <p class="lead">A guided, non-technical walkthrough for setting up a secure AI support layer on Parthesh’s Mac with Jason’s help.</p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#walkthrough">Start the walkthrough</a>
+          <a class="btn secondary" href="#prompt">Copy setup prompt</a>
+        </div>
+      </div>
+      <div class="summary">
+        <div class="mini"><strong>What it is</strong><p>A small persistent agent team: main agent, system designer, and maintenance bot.</p></div>
+        <div class="mini"><strong>How we connect</strong><p>Tailscale for secure access, Telegram for conversation, AgentMail for inbox workflows.</p></div>
+        <div class="mini"><strong>What it improves</strong><p>Less cognitive load, better follow-up, reusable workflows, and memory that compounds.</p></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap" id="overview">
+      <div class="section-title">
+        <h2>Executive summary</h2>
+        <p>This is not a broad automation project. It is a practical first setup: secure access, communication, memory, and a few useful workflows that can be tuned during the first 30 days.</p>
+      </div>
+      <div class="grid-3">
+        <article class="card"><span class="pill blue">Main agent</span><h3>Daily support</h3><p>The primary AI assistant for questions, summaries, organization, drafting, and follow-up.</p></article>
+        <article class="card"><span class="pill green">System designer</span><h3>Workflow improvement</h3><p>Helps turn repeated needs into clearer processes, prompts, and agent routines.</p></article>
+        <article class="card"><span class="pill gold">Maintenance bot</span><h3>Reliability layer</h3><p>Tracks health, notes issues, suggests tuning, and keeps the setup from becoming a black box.</p></article>
+      </div>
+    </section>
+
+    <section class="wrap" id="what">
+      <div class="section-title"><h2>What this is</h2><p>Plain-English map of the pieces we will set up together.</p></div>
+      <div class="grid-2">
+        <div class="card"><h3>Tailscale security</h3><p>Creates a private, controlled way for Jason to help access and support the Mac without exposing it broadly to the internet.</p></div>
+        <div class="card"><h3>Telegram communication</h3><p>Gives Parthesh and the team a simple place to ask the agent for help and receive responses.</p></div>
+        <div class="card"><h3>AgentMail</h3><p>Gives the agent an inbox-style workflow lane for email-like requests, intake, and simple automations.</p></div>
+        <div class="card"><h3>Memory layer</h3><p>Short-term notes and long-term memory help the system remember useful context, decisions, preferences, and repeated workflows.</p></div>
+      </div>
+    </section>
+
+    <section class="wrap" id="walkthrough">
+      <div class="section-title"><h2>Guided setup walkthrough</h2><p>Each step is written so Parthesh can follow what is happening while Jason handles the technical parts.</p></div>
+      <div class="walkthrough">
+        <article class="step"><div class="num">1</div><div><h3>Prepare the Mac</h3><p class="plain">We confirm the machine is ready and create a clean place for the AI setup.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Keep the Mac powered on</li><li>Confirm admin access</li><li>Stay available for approvals</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Check macOS readiness</li><li>Create setup folder</li><li>Document machine name</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Mac ready</li><li>Project folder created</li><li>Owner noted</li></ul></div></div></div></article>
+        <article class="step"><div class="num">2</div><div><h3>Set up Tailscale</h3><p class="plain">We create a secure private connection for support and maintenance.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Login to Tailscale</li><li>Approve device access</li><li>Confirm who should have access</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Name the device clearly</li><li>Verify private access</li><li>Record access boundaries</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Mac visible in Tailscale</li><li>Access list documented</li></ul></div></div></div></article>
+        <article class="step"><div class="num">3</div><div><h3>Install OpenClaw foundation</h3><p class="plain">We set up the small agent team: main agent, system designer, and maintenance bot.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Choose simple agent names</li><li>Confirm the first team needs</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create isolated OpenClaw workspace</li><li>Configure initial agent roster</li><li>Keep permissions narrow</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Roster visible</li><li>Agents respond to test prompts</li></ul></div></div></div></article>
+        <article class="step"><div class="num">4</div><div><h3>Connect Hermes bot + LLM access</h3><p class="plain">We connect the agent brain using Codex and ChatGPT OAuth / GPT-5.5 access.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Approve OAuth login when needed</li><li>Do not paste passwords or secrets into chat</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create Hermes profile</li><li>Configure model connection</li><li>Verify tool access</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Model responds</li><li>Hermes profile loads</li><li>Tools are listed</li></ul></div></div></div></article>
+        <article class="step"><div class="num">5</div><div><h3>Connect Telegram</h3><p class="plain">We create the simple communication channel for Parthesh and the team.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Confirm who will use Telegram</li><li>Send a test message</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Configure routing</li><li>Test agent response</li><li>Document usage rules</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Message sent</li><li>Agent replied</li></ul></div></div></div></article>
+        <article class="step"><div class="num">6</div><div><h3>Set up AgentMail</h3><p class="plain">We give the agent an inbox lane for requests, intake, and automation.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Confirm inbox purpose</li><li>Approve first automation</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create/connect AgentMail</li><li>Test the inbox</li><li>Build one simple flow</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>AgentMail works</li><li>First flow tested</li></ul></div></div></div></article>
+        <article class="step"><div class="num">7</div><div><h3>Create memory layer</h3><p class="plain">We decide what the agents should remember and what must stay out of memory.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Share preferences</li><li>Share key workflows</li><li>Identify off-limits data</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Create short-term notes</li><li>Create long-term memory folder</li><li>Set memory rules</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Memory write/read tested</li><li>Secret rules documented</li></ul></div></div></div></article>
+        <article class="step"><div class="num">8</div><div><h3>Run first useful workflows</h3><p class="plain">We prove the setup works with real examples before expanding.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Give 2–3 real requests</li><li>Say what felt useful or confusing</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Test Telegram request</li><li>Test AgentMail flow</li><li>Test memory capture</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Three workflows tested</li><li>Next tuning list created</li></ul></div></div></div></article>
+        <article class="step"><div class="num">9</div><div><h3>Handoff + 30-day tuning</h3><p class="plain">We finish with a simple operating agreement for how Parthesh uses it and how Jason supports it.</p><div class="cols"><div class="box"><strong>Parthesh does</strong><ul><li>Use the agent in daily work</li><li>Flag friction points</li><li>Approve new access before use</li></ul></div><div class="box"><strong>Jason does</strong><ul><li>Tune prompts and workflows</li><li>Support maintenance</li><li>Keep setup notes current</li></ul></div><div class="box"><strong>Receipt</strong><ul class="done"><li>Handoff reviewed</li><li>Support path clear</li></ul></div></div></div></article>
+      </div>
+    </section>
+
+    <section class="wrap" id="boundaries">
+      <div class="section-title"><h2>Simple boundaries</h2><p>These rules keep the setup safe and understandable.</p></div>
+      <div class="grid-3">
+        <div class="card"><span class="pill green">Allowed</span><ul class="done"><li>Draft and organize</li><li>Research and summarize</li><li>Remember approved context</li><li>Suggest next actions</li><li>Document workflows</li></ul></div>
+        <div class="card"><span class="pill gold">Approval first</span><ul class="check"><li>Customer-facing messages</li><li>Financial actions</li><li>Legal or sensitive work</li><li>Live business system changes</li><li>Composio integrations</li></ul></div>
+        <div class="card"><span class="pill red">Never store</span><ul><li>Passwords</li><li>API keys</li><li>OAuth codes</li><li>Private secrets</li><li>Unapproved customer data</li></ul></div>
+      </div>
+    </section>
+
+    <section class="wrap" id="prompt">
+      <div class="section-title"><h2>Setup prompt for the main agent</h2><p>Use this once the first agent is live.</p></div>
+      <div class="prompt"><div class="copylabel">Copy / paste prompt</div><pre>You are Parthesh’s persistent AI support agent. Your job is to reduce cognitive load, help organize business information, support team communication, remember useful context, and turn recurring needs into reliable workflows.
+
+Start narrow. Ask before taking sensitive actions. Keep responses clear, practical, and action-oriented.
+
+You may draft, organize, research, summarize, remember approved context, and suggest next actions.
+
+You must ask for approval before customer-facing messages, financial actions, legal or sensitive work, live business system changes, or new integrations.
+
+When you learn a repeated workflow, suggest turning it into a documented process.
+
+Never store passwords, API keys, OAuth codes, or secrets in memory.</pre></div>
+    </section>
+
+    <section class="wrap" id="questions">
+      <div class="section-title"><h2>Questions to answer during setup</h2><p>We do not need all answers upfront. These guide the walkthrough.</p></div>
+      <div class="grid-2">
+        <div class="card"><h3>People + communication</h3><ul class="check"><li>Who on the team should use Telegram?</li><li>Should this be a bot, channel, or both?</li><li>What should the main agent be named?</li><li>What should the maintenance bot be named?</li></ul></div>
+        <div class="card"><h3>Workflows + access</h3><ul class="check"><li>Which 3 workflows matter most in the first 30 days?</li><li>What systems are off-limits?</li><li>What should AgentMail handle first?</li><li>Which Composio integrations are actually needed?</li></ul></div>
+      </div>
+    </section>
+
+    <section class="wrap">
+      <div class="callout">
+        <div><h3>Persistent working document</h3><p>The spreadsheet version keeps the implementation notes, prompt, questions, and boundaries in one editable place.</p></div>
+        <a class="btn primary" style="background:var(--navy);color:white" href="https://docs.google.com/spreadsheets/d/11mX3aS6KZ9AXEvJmdyTP7mHAeBzvULszlT_rLMwuROA/edit?usp=drivesdk">Open Google Sheet</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <div class="footerline"><span>Prepared by Agent57 / Jason Galoob</span><span>OpenClaw / Hermes persistent AI setup walkthrough</span></div>
+  </footer>
+</body>
+</html>
