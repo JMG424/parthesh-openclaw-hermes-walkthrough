@@ -78,6 +78,7 @@
     <nav class="nav" aria-label="Page navigation">
       <div class="brand"><div class="mark">57</div><span>Agent57 Setup Guide</span></div>
       <div class="navlinks">
+        <a href="#preflight">Pre-flight</a>
         <a href="#walkthrough">Walkthrough</a>
         <a href="#step0">Forge Readiness</a>
         <a href="#integrations">Integrations</a>
@@ -134,6 +135,65 @@
         <article class="card"><span class="pill blue">Layer</span><h3>Use it for SaaS apps</h3><p>Gmail, Google Calendar, Drive, Slack, Notion, Airtable, CRM, and other common apps should connect through Composio when possible.</p></article>
         <article class="card"><span class="pill green">Why</span><h3>Less auth burden</h3><p>Composio handles OAuth, scopes, token refresh, and app-specific API details so the client install has fewer brittle secrets.</p></article>
         <article class="card"><span class="pill gold">Boundary</span><h3>Start narrow</h3><p>Connect only the apps needed for the first 48-hour job. Add more integrations after real use proves the need.</p></article>
+      </div>
+    </section>
+
+    <section class="wrap" id="preflight">
+      <div class="section-title"><h2>Pre-flight — accounts, purchases, installs</h2><p>Do these <strong>before</strong> the Zoom call. Each row is something to sign up for, pay for, or download. Most are five minutes each.</p></div>
+      <div class="grid-3">
+        <article class="card">
+          <span class="pill blue">Accounts to create</span>
+          <h3>Sign up for these</h3>
+          <ul class="check">
+            <li><strong>Shared Gmail</strong> — fresh address. Jason + Parthesh both know the password (kept in a shared password manager, not over text). This is the SSO identity for Tailscale so we land on the same tailnet.</li>
+            <li><strong>Tailscale</strong> — free plan covers up to 3 users / 100 devices. Sign in with the shared Gmail.</li>
+            <li><strong>OpenAI / ChatGPT</strong> — Parthesh’s own account (he’ll use Codex CLI as himself).</li>
+            <li><strong>Anthropic</strong> — Parthesh’s own account. OpenClaw’s main agent runs on Claude Sonnet 4.6 with Opus 4.6 fallback — this is <em>separate</em> from ChatGPT.</li>
+            <li><strong>Telegram</strong> — Parthesh’s own account if he doesn’t already use it (needs his phone number).</li>
+            <li><strong>Composio</strong> — sign in with the shared Gmail; that becomes the integration-layer identity.</li>
+            <li><strong>AgentMail</strong> — sign in with the shared Gmail.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <span class="pill green">Purchases / subscriptions</span>
+          <h3>Pay for these up front</h3>
+          <ul class="check">
+            <li><strong>ChatGPT Plus</strong> — $20/mo on Parthesh’s OpenAI account. <strong>Required</strong> for Codex CLI OAuth.</li>
+            <li><strong>Claude Pro</strong> — $20/mo on Parthesh’s Anthropic account, <em>or</em> a small API balance ($20+) on the Anthropic console. OpenClaw needs one or the other to talk.</li>
+            <li><strong>Tailscale</strong> — free plan is enough; no purchase unless we add &gt;3 users later.</li>
+            <li><strong>1Password</strong> (or any shared password manager) — for the shared Gmail, 2FA TOTP, and any tokens Jason rotates for Parthesh. <strong>Strongly recommended</strong> before sharing any credential.</li>
+            <li><strong>Composio / AgentMail</strong> — free tiers fine to start; upgrade only after real use proves the need.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <span class="pill gold">Installs / downloads</span>
+          <h3>On Parthesh’s Mac before the call</h3>
+          <ul class="check">
+            <li><strong>macOS up to date</strong> — Apple menu → System Settings → General → Software Update.</li>
+            <li><strong>Free disk space</strong> — ≥ 10 GB free for tools and logs.</li>
+            <li><strong>Tailscale</strong> for macOS — App Store, or tailscale.com/download.</li>
+            <li><strong>Codex CLI</strong> — installed during Step 4 via <code>npm i -g @openai/codex</code> (Step 1 sets up Node first).</li>
+            <li><strong>Telegram</strong> for macOS — telegram.org/dl/macos.</li>
+            <li><strong>1Password</strong> for macOS — to autofill the shared creds without retyping them on screen-share.</li>
+            <li><strong>Apple ID + sudo password</strong> ready — Tailscale’s system daemon and most installers will ask.</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="callout" style="margin-top:18px">
+        <div>
+          <h3>Credentials hygiene + a cleaner Tailscale alternative</h3>
+          <p>Treat the shared Gmail like a production credential: 2FA on, TOTP stored in the shared password manager, recovery codes saved in a separate vault. <strong>Cleaner alternative on Tailscale:</strong> keep Jason’s existing tailnet and send Parthesh a user invite from the Tailscale admin — he signs in with his <em>own</em> Google account, and joins as a regular user. Better audit trail; no shared SSO needed for Tailscale specifically. Use the shared Gmail only for SaaS where joint admin actually matters (Composio, AgentMail).</p>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:14px;background:linear-gradient(135deg,#fff7e6,#ffeacc);border-color:#f3c98b">
+        <div>
+          <h3>One thing to set up on the call, not before</h3>
+          <p>Don’t pre-link any Composio integrations (Gmail, Calendar, Drive) until we’re live together — scopes get approved one at a time on the call so Parthesh sees what each one grants. Same for AgentMail flows.</p>
+        </div>
       </div>
     </section>
 
